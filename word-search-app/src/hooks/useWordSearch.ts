@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { GameState, Position, FoundWord } from '../types';
+import type { GameState, Position, FoundWord, Cell } from '../types';
 import { Direction } from '../types';
 import { placeWordsInGrid } from '../utils/gridGenerator';
 import { useTouch } from './useTouch';

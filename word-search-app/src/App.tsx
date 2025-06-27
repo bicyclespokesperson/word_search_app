@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Header } from './components/Header/Header';
 import { Grid } from './components/Grid/Grid';
 import { Stats } from './components/Stats/Stats';
@@ -16,7 +16,6 @@ function App() {
     handlePointerDown,
     handlePointerEnter,
     handlePointerUp,
-    newGame,
     toggleShowAnswers
   } = useWordSearch(currentWords);
 

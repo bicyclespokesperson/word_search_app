@@ -201,7 +201,7 @@ export const placeWordsInGrid = (
     // Calculate how many backwards words we want (target ~2 per grid)
     const targetBackwardsCount = Math.min(2, Math.floor(totalWords * 0.15)); // 15% max, but cap at 2
     const backwardsPlaced = placements.filter(p => 
-      backwardDirections.includes(p.direction)
+      (backwardDirections as readonly Direction[]).includes(p.direction)
     ).length;
     
     // If we haven't placed enough backwards words and we're in the first 80% of placement

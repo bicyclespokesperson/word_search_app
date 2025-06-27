@@ -26,7 +26,8 @@ describe('Storage', () => {
         bonusWordsFound: 0,
         isCompleted: false,
         currentSelection: [],
-        isSelecting: false
+        isSelecting: false,
+        showingAnswers: false
       };
 
       saveGameState(gameState, 'test-seed');
@@ -53,7 +54,8 @@ describe('Storage', () => {
         bonusWordsFound: 0,
         isCompleted: false,
         currentSelection: [],
-        isSelecting: false
+        isSelecting: false,
+        showingAnswers: false
       };
 
       // Should not throw
