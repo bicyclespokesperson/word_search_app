@@ -8,10 +8,13 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 };
 
 export const selectRandomWords = (wordList: string[], count: number): string[] => {
-  if (wordList.length <= count) {
-    return [...wordList];
+  // Filter out words shorter than 3 letters
+  const filteredWords = wordList.filter(word => word.length >= 3);
+  
+  if (filteredWords.length <= count) {
+    return [...filteredWords];
   }
   
-  const shuffled = shuffleArray(wordList);
+  const shuffled = shuffleArray(filteredWords);
   return shuffled.slice(0, count);
 };
