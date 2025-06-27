@@ -1,0 +1,89 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 2px;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  touch-action: none;
+  max-width: min(90vw, 600px);
+  margin: 0 auto;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
+  border-radius: 4px;
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 32px;
+  position: relative;
+}
+
+.cell:hover {
+  background-color: var(--color-surface);
+  transform: scale(1.05);
+}
+
+.cell.highlighted {
+  background-color: var(--color-selection-highlight);
+  color: var(--color-background);
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cell.foundWord {
+  background-color: var(--color-target-word-highlight);
+  color: var(--color-background);
+  border-color: var(--color-primary);
+}
+
+.cell.foundWord.bonusWord {
+  background-color: var(--color-bonus-word-highlight);
+  border-color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    padding: 12px;
+    gap: 1px;
+    max-width: 95vw;
+  }
+  
+  .cell {
+    font-size: clamp(0.7rem, 3vw, 1rem);
+    min-height: 28px;
+    border-radius: 3px;
+  }
+  
+  .cell:hover {
+    transform: scale(1.02);
+  }
+  
+  .cell.highlighted {
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    padding: 8px;
+    gap: 1px;
+  }
+  
+  .cell {
+    font-size: clamp(0.6rem, 4vw, 0.9rem);
+    min-height: 24px;
+    border-radius: 2px;
+  }
+}

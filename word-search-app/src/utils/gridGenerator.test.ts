@@ -11,7 +11,8 @@ import {
   fillEmptyCells,
   placeWordsInGrid
 } from './gridGenerator';
-import { Direction, Cell } from '../types';
+import { Direction } from '../types';
+import type { Cell } from '../types';
 
 describe('Grid Generator', () => {
   describe('createEmptyGrid', () => {

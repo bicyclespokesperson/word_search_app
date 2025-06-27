@@ -1,0 +1,53 @@
+{
+  "programming": [
+    "JAVASCRIPT",
+    "TYPESCRIPT",
+    "FUNCTION",
+    "VARIABLE",
+    "COMPONENT",
+    "ALGORITHM",
+    "DATABASE",
+    "INTERFACE",
+    "PARAMETER",
+    "DEVELOPER",
+    "FRAMEWORK",
+    "REPOSITORY",
+    "DEBUGGING",
+    "RESPONSIVE",
+    "DEPLOYMENT"
+  ],
+  "animals": [
+    "ELEPHANT",
+    "GIRAFFE",
+    "PENGUIN",
+    "DOLPHIN",
+    "BUTTERFLY",
+    "RHINOCEROS",
+    "KANGAROO",
+    "CHIMPANZEE",
+    "CROCODILE",
+    "FLAMINGO",
+    "SEAHORSE",
+    "OCTOPUS",
+    "TIGER",
+    "LEOPARD",
+    "MONKEY"
+  ],
+  "nature": [
+    "MOUNTAIN",
+    "FOREST",
+    "OCEAN",
+    "RIVER",
+    "DESERT",
+    "VOLCANO",
+    "RAINBOW",
+    "THUNDER",
+    "LIGHTNING",
+    "WATERFALL",
+    "GLACIER",
+    "MEADOW",
+    "CANYON",
+    "ISLAND",
+    "VALLEY"
+  ]
+}

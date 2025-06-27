@@ -26,16 +26,18 @@ export interface WordPlacement {
   positions: Position[];
 }
 
-export enum Direction {
-  HORIZONTAL = 'horizontal',
-  VERTICAL = 'vertical',
-  DIAGONAL_DOWN_RIGHT = 'diagonal-down-right',
-  DIAGONAL_DOWN_LEFT = 'diagonal-down-left',
-  DIAGONAL_UP_RIGHT = 'diagonal-up-right',
-  DIAGONAL_UP_LEFT = 'diagonal-up-left',
-  HORIZONTAL_REVERSE = 'horizontal-reverse',
-  VERTICAL_REVERSE = 'vertical-reverse'
-}
+export const Direction = {
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  DIAGONAL_DOWN_RIGHT: 'diagonal-down-right',
+  DIAGONAL_DOWN_LEFT: 'diagonal-down-left',
+  DIAGONAL_UP_RIGHT: 'diagonal-up-right',
+  DIAGONAL_UP_LEFT: 'diagonal-up-left',
+  HORIZONTAL_REVERSE: 'horizontal-reverse',
+  VERTICAL_REVERSE: 'vertical-reverse'
+} as const;
+
+export type Direction = typeof Direction[keyof typeof Direction];
 
 export interface GameState {
   grid: Cell[][];

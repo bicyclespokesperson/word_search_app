@@ -1,4 +1,5 @@
-import { Cell, Position, Direction, WordPlacement } from '../types';
+import type { Cell, Position, WordPlacement } from '../types';
+import { Direction } from '../types';
 
 const GRID_SIZE = 15;
 const COMMON_LETTERS = 'ETAOINSHRDLCUMWFGYPBVKJXQZ';

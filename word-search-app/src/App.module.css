@@ -1,0 +1,29 @@
+.app {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .main {
+    gap: 20px;
+    padding: 0 16px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    gap: 16px;
+    padding: 0 12px 24px;
+  }
+}
