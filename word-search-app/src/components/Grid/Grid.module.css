@@ -8,8 +8,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   user-select: none;
   touch-action: none;
-  max-width: min(90vw, 600px);
+  width: 100%;
+  max-width: min(calc(100vw - 40px), 600px);
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .cell {
@@ -27,6 +29,8 @@
   transition: all 0.2s ease;
   min-height: 32px;
   position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .cell:hover {
@@ -94,7 +98,7 @@
   .grid {
     padding: 12px;
     gap: 1px;
-    max-width: 95vw;
+    max-width: calc(100vw - 32px);
   }
   
   .cell {
@@ -116,11 +120,27 @@
   .grid {
     padding: 8px;
     gap: 1px;
+    max-width: calc(100vw - 24px);
   }
   
   .cell {
     font-size: clamp(0.6rem, 4vw, 0.9rem);
     min-height: 24px;
     border-radius: 2px;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    .grid {
+      max-width: calc(100vw - 40px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .grid {
+      max-width: calc(100vw - 32px);
+    }
   }
 }
