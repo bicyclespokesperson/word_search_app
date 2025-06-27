@@ -33,7 +33,8 @@ export const useWordSearch = (targetWords: string[] | null) => {
     updateSelection,
     endSelection,
     clearSelection,
-    isPositionSelected
+    isPositionSelected,
+    isPositionDimmed
   } = useTouch();
 
   useEffect(() => {
@@ -138,11 +139,12 @@ export const useWordSearch = (targetWords: string[] | null) => {
       grid: prev.grid.map(row =>
         row.map(cell => ({
           ...cell,
-          isHighlighted: isPositionSelected(cell.position)
+          isHighlighted: isPositionSelected(cell.position),
+          isDimmed: isPositionDimmed(cell.position)
         }))
       )
     }));
-  }, [isPositionSelected]);
+  }, [isPositionSelected, isPositionDimmed]);
 
   const getSelectedWord = useCallback((positions: Position[]): string => {
     if (positions.length === 0) return '';

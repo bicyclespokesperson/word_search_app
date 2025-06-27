@@ -6,7 +6,8 @@ export const useTouch = () => {
     isActive: false,
     startPosition: null,
     currentPosition: null,
-    selectedPositions: []
+    selectedPositions: [],
+    dimmedPositions: []
   });
 
 
@@ -39,12 +40,38 @@ export const useTouch = () => {
     return positions;
   }, []);
 
+  const getAllTouchedPositions = useCallback((start: Position, end: Position): Position[] => {
+    if (!start || !end) return [];
+
+    const positions: Position[] = [];
+    const deltaX = end.col - start.col;
+    const deltaY = end.row - start.row;
+    const steps = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+
+    if (steps === 0) {
+      return [start];
+    }
+
+    const stepX = deltaX === 0 ? 0 : deltaX / steps;
+    const stepY = deltaY === 0 ? 0 : deltaY / steps;
+
+    for (let i = 0; i <= steps; i++) {
+      positions.push({
+        row: Math.round(start.row + i * stepY),
+        col: Math.round(start.col + i * stepX)
+      });
+    }
+
+    return positions;
+  }, []);
+
   const startSelection = useCallback((position: Position) => {
     setTouchState({
       isActive: true,
       startPosition: position,
       currentPosition: position,
-      selectedPositions: [position]
+      selectedPositions: [position],
+      dimmedPositions: []
     });
   }, []);
 
@@ -52,15 +79,28 @@ export const useTouch = () => {
     setTouchState(prev => {
       if (!prev.isActive || !prev.startPosition) return prev;
 
-      const selectedPositions = getPositionsInLine(prev.startPosition, position);
+      const validLinePositions = getPositionsInLine(prev.startPosition, position);
+      const allTouchedPositions = getAllTouchedPositions(prev.startPosition, position);
       
-      return {
-        ...prev,
-        currentPosition: position,
-        selectedPositions
-      };
+      // If we have a valid line, use it for selection and clear dimmed
+      // Otherwise, use all touched positions for dimming
+      if (validLinePositions.length > 0) {
+        return {
+          ...prev,
+          currentPosition: position,
+          selectedPositions: validLinePositions,
+          dimmedPositions: []
+        };
+      } else {
+        return {
+          ...prev,
+          currentPosition: position,
+          selectedPositions: [],
+          dimmedPositions: allTouchedPositions
+        };
+      }
     });
-  }, [getPositionsInLine]);
+  }, [getPositionsInLine, getAllTouchedPositions]);
 
   const endSelection = useCallback(() => {
     const finalState = { ...touchState };
@@ -68,7 +108,8 @@ export const useTouch = () => {
       isActive: false,
       startPosition: null,
       currentPosition: null,
-      selectedPositions: []
+      selectedPositions: [],
+      dimmedPositions: []
     });
     return finalState;
   }, [touchState]);
@@ -78,7 +119,8 @@ export const useTouch = () => {
       isActive: false,
       startPosition: null,
       currentPosition: null,
-      selectedPositions: []
+      selectedPositions: [],
+      dimmedPositions: []
     });
   }, []);
 
@@ -92,6 +134,11 @@ export const useTouch = () => {
       return touchState.selectedPositions.some(
         pos => pos.row === position.row && pos.col === position.col
       );
-    }, [touchState.selectedPositions])
+    }, [touchState.selectedPositions]),
+    isPositionDimmed: useCallback((position: Position) => {
+      return touchState.dimmedPositions.some(
+        pos => pos.row === position.row && pos.col === position.col
+      );
+    }, [touchState.dimmedPositions])
   };
 };

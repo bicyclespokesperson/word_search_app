@@ -14,6 +14,7 @@ export const createEmptyGrid = (size: number = GRID_SIZE): Cell[][] => {
       letter: '',
       position: { row, col },
       isHighlighted: false,
+      isDimmed: false,
       isPartOfFoundWord: false
     }))
   );

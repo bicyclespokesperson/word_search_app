@@ -42,6 +42,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.cell.dimmed {
+  background-color: var(--color-selection-highlight);
+  color: var(--color-background);
+  opacity: 0.4;
+  transform: scale(1.05);
+  z-index: 5;
+}
+
 .cell.foundWord {
   background-color: var(--color-target-word-highlight);
   color: var(--color-background);

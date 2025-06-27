@@ -7,6 +7,7 @@ export interface Cell {
   letter: string;
   position: Position;
   isHighlighted: boolean;
+  isDimmed: boolean;
   isPartOfFoundWord: boolean;
   foundWordId?: string;
   isBonusFlashing?: boolean;
@@ -74,4 +75,5 @@ export interface TouchState {
   startPosition: Position | null;
   currentPosition: Position | null;
   selectedPositions: Position[];
+  dimmedPositions: Position[];
 }

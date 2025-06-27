@@ -24,6 +24,10 @@ export const Cell = ({ cell, onPointerDown, onPointerEnter, onPointerUp }: CellP
       className += ` ${styles.highlighted}`;
     }
     
+    if (cell.isDimmed) {
+      className += ` ${styles.dimmed}`;
+    }
+    
     if (cell.isPartOfFoundWord) {
       className += ` ${styles.foundWord}`;
       // Add bonus word styling if needed
