@@ -1,0 +1,117 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  background-color: var(--color-background);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  transform: scale(0.8) translateY(20px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.visible {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.celebration {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: bounce 1s ease-in-out infinite alternate;
+}
+
+.title {
+  color: var(--color-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message {
+  color: var(--color-text);
+  font-size: 1.2rem;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.bonus {
+  color: var(--color-bonus-word-highlight);
+  font-size: 1.1rem;
+  margin: 0 0 32px 0;
+  font-weight: 600;
+}
+
+.newGameButton {
+  background-color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  color: var(--color-background);
+  padding: 12px 32px;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.newGameButton:hover {
+  background-color: transparent;
+  color: var(--color-accent);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 32px 24px;
+    max-width: 320px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .celebration {
+    font-size: 3rem;
+  }
+  
+  .message {
+    font-size: 1.1rem;
+  }
+}

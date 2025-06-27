@@ -3,6 +3,7 @@ import { Header } from './components/Header/Header';
 import { Grid } from './components/Grid/Grid';
 import { Stats } from './components/Stats/Stats';
 import { WordList } from './components/WordList/WordList';
+import { Victory } from './components/Victory/Victory';
 import { useWordSearch } from './hooks/useWordSearch';
 import { selectRandomWords } from './utils/wordSelector';
 import wordLists from './data/wordLists.json';
@@ -54,6 +55,13 @@ function App() {
           foundWords={foundTargetWords}
         />
       </main>
+      
+      <Victory
+        isVisible={gameState.isCompleted}
+        targetWordsFound={foundTargetWords.length}
+        bonusWordsFound={gameState.bonusWordsFound}
+        onNewGame={handleNewGame}
+      />
     </div>
   );
 }
