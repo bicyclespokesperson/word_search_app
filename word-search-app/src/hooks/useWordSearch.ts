@@ -3,6 +3,7 @@ import type { GameState, Position, FoundWord } from '../types';
 import { placeWordsInGrid } from '../utils/gridGenerator';
 import { useTouch } from './useTouch';
 import { initializeDictionary, isValidWord } from '../utils/dictionary';
+import { saveGameState, loadGameState, clearGameState } from '../utils/storage';
 
 export const useWordSearch = (targetWords: string[]) => {
   const [gameState, setGameState] = useState<GameState>({
@@ -42,8 +43,49 @@ export const useWordSearch = (targetWords: string[]) => {
     updateCellHighlights();
   }, [touchState]);
 
-  const initializeGame = useCallback(() => {
-    const { grid } = placeWordsInGrid(targetWords);
+  const initializeGame = useCallback((forcedSeed?: string) => {
+    // Try to load saved game first
+    if (!forcedSeed) {
+      const savedGame = loadGameState();
+      if (savedGame) {
+        // Restore saved game
+        const { grid } = placeWordsInGrid(savedGame.targetWords, 15, 1000, savedGame.gridSeed);
+        
+        // Restore found word highlights
+        const restoredGrid = grid.map(row =>
+          row.map(cell => {
+            const foundWord = savedGame.foundWords.find(fw => 
+              fw.positions.some(pos => pos.row === cell.position.row && pos.col === cell.position.col)
+            );
+            
+            if (foundWord && foundWord.isTargetWord) {
+              return {
+                ...cell,
+                isPartOfFoundWord: true,
+                foundWordId: foundWord.id
+              };
+            }
+            
+            return cell;
+          })
+        );
+        
+        setGameState({
+          grid: restoredGrid,
+          targetWords: savedGame.targetWords,
+          foundWords: savedGame.foundWords,
+          bonusWordsFound: savedGame.bonusWordsFound,
+          isCompleted: savedGame.isCompleted,
+          currentSelection: [],
+          isSelecting: false,
+          gridSeed: savedGame.gridSeed
+        });
+        return;
+      }
+    }
+
+    // Create new game
+    const { grid, seed } = placeWordsInGrid(targetWords, 15, 1000, forcedSeed);
     
     setGameState({
       grid,
@@ -52,7 +94,8 @@ export const useWordSearch = (targetWords: string[]) => {
       bonusWordsFound: 0,
       isCompleted: false,
       currentSelection: [],
-      isSelecting: false
+      isSelecting: false,
+      gridSeed: seed
     });
   }, [targetWords]);
 
@@ -103,7 +146,8 @@ export const useWordSearch = (targetWords: string[]) => {
             pos.row === cell.position.row && pos.col === cell.position.col
           );
           
-          if (isPartOfWord) {
+          // Only highlight target words permanently, not bonus words
+          if (isPartOfWord && isTargetWord) {
             return {
               ...cell,
               isPartOfFoundWord: true,
@@ -125,13 +169,25 @@ export const useWordSearch = (targetWords: string[]) => {
 
       console.log(`Found word: ${word}, Total target words found: ${targetWordsFound.length}`);
 
-      return {
+      const newState = {
         ...prev,
         grid: newGrid,
         foundWords: newFoundWords,
         bonusWordsFound: newBonusWordsFound,
         isCompleted
       };
+
+      // Auto-save game state
+      if (prev.gridSeed) {
+        saveGameState(newState, prev.gridSeed);
+      }
+
+      // Clear saved game if completed
+      if (isCompleted) {
+        setTimeout(() => clearGameState(), 1000);
+      }
+
+      return newState;
     });
   }, []);
 
@@ -181,7 +237,8 @@ export const useWordSearch = (targetWords: string[]) => {
   }, [touchState, endSelection, getSelectedWord, gameState.targetWords, gameState.foundWords, markWordAsFound, clearSelection]);
 
   const newGame = useCallback(() => {
-    initializeGame();
+    clearGameState(); // Clear any saved progress
+    initializeGame(Date.now().toString()); // Force new game with new seed
     clearSelection();
   }, [initializeGame, clearSelection]);
 

@@ -47,6 +47,7 @@ export interface GameState {
   isCompleted: boolean;
   currentSelection: Position[];
   isSelecting: boolean;
+  gridSeed?: string;
 }
 
 export interface Theme {

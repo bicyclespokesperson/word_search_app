@@ -140,22 +140,74 @@ export const fillEmptyCells = (grid: Cell[][]): void => {
   }
 };
 
+// Simple seeded random number generator
+class SeededRandom {
+  private seed: number;
+
+  constructor(seed: string) {
+    this.seed = this.hashCode(seed);
+  }
+
+  private hashCode(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+  }
+
+  next(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280;
+    return this.seed / 233280;
+  }
+}
+
 export const placeWordsInGrid = (
   words: string[],
   gridSize: number = GRID_SIZE,
-  maxAttempts: number = 1000
-): { grid: Cell[][]; placements: WordPlacement[] } => {
+  maxAttempts: number = 1000,
+  seed?: string
+): { grid: Cell[][]; placements: WordPlacement[]; seed: string } => {
+  const actualSeed = seed || Date.now().toString();
+  const rng = new SeededRandom(actualSeed);
+  
   const grid = createEmptyGrid(gridSize);
   const placements: WordPlacement[] = [];
   const sortedWords = [...words].sort((a, b) => b.length - a.length);
+
+  // Replace random functions with seeded versions
+  const getSeededRandomPosition = (size: number): Position => ({
+    row: Math.floor(rng.next() * size),
+    col: Math.floor(rng.next() * size)
+  });
+
+  const getSeededRandomDirection = (): Direction => {
+    const directions = Object.values(Direction);
+    return directions[Math.floor(rng.next() * directions.length)];
+  };
+
+  const getSeededRandomLetter = (): string => {
+    const totalWeight = Object.values(LETTER_WEIGHTS).reduce((sum, weight) => sum + weight, 0);
+    let random = rng.next() * totalWeight;
+
+    for (const [letter, weight] of Object.entries(LETTER_WEIGHTS)) {
+      random -= weight;
+      if (random <= 0) {
+        return letter;
+      }
+    }
+    return 'E';
+  };
 
   for (const word of sortedWords) {
     let placed = false;
     let attempts = 0;
 
     while (!placed && attempts < maxAttempts) {
-      const startPos = getRandomPosition(gridSize);
-      const direction = getRandomDirection();
+      const startPos = getSeededRandomPosition(gridSize);
+      const direction = getSeededRandomDirection();
 
       const placement = placeWordInGrid(grid, word, startPos, direction);
       if (placement) {
@@ -171,6 +223,14 @@ export const placeWordsInGrid = (
     }
   }
 
-  fillEmptyCells(grid);
-  return { grid, placements };
+  // Fill empty cells with seeded random letters
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      if (grid[row][col].letter === '') {
+        grid[row][col].letter = getSeededRandomLetter();
+      }
+    }
+  }
+
+  return { grid, placements, seed: actualSeed };
 };
