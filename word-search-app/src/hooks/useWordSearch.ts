@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import type { GameState, Position, FoundWord } from '../types';
 import { placeWordsInGrid } from '../utils/gridGenerator';
 import { useTouch } from './useTouch';
+import { initializeDictionary, isValidWord } from '../utils/dictionary';
 
 export const useWordSearch = (targetWords: string[]) => {
   const [gameState, setGameState] = useState<GameState>({
@@ -24,7 +25,11 @@ export const useWordSearch = (targetWords: string[]) => {
   } = useTouch();
 
   useEffect(() => {
-    initializeGame();
+    const initApp = async () => {
+      await initializeDictionary();
+      initializeGame();
+    };
+    initApp();
   }, [targetWords]);
 
   useEffect(() => {
@@ -85,7 +90,7 @@ export const useWordSearch = (targetWords: string[]) => {
       }
 
       const foundWord: FoundWord = {
-        id: `${word}-${Date.now()}-${Math.random()}`,
+        id: `${isTargetWord ? 'target' : 'bonus'}-${word}-${Date.now()}-${Math.random()}`,
         word,
         positions,
         isTargetWord,
@@ -162,6 +167,15 @@ export const useWordSearch = (targetWords: string[]) => {
 
     if (isTargetWord && !isAlreadyFound) {
       markWordAsFound(wordToMark, finalState.selectedPositions, true);
+    } else if (!isTargetWord) {
+      // Check for bonus words
+      const isBonusWord = isValidWord(selectedWord) || isValidWord(reversedWord);
+      const bonusWordToMark = isValidWord(selectedWord) ? selectedWord : reversedWord;
+      const isBonusAlreadyFound = gameState.foundWords.some(fw => fw.word === bonusWordToMark);
+      
+      if (isBonusWord && !isBonusAlreadyFound) {
+        markWordAsFound(bonusWordToMark, finalState.selectedPositions, false);
+      }
     }
     
   }, [touchState, endSelection, getSelectedWord, gameState.targetWords, gameState.foundWords, markWordAsFound, clearSelection]);

@@ -26,6 +26,10 @@ export const Cell = ({ cell, onPointerDown, onPointerEnter, onPointerUp }: CellP
     
     if (cell.isPartOfFoundWord) {
       className += ` ${styles.foundWord}`;
+      // Add bonus word styling if needed
+      if (cell.foundWordId?.includes('bonus')) {
+        className += ` ${styles.bonusWord}`;
+      }
     }
     
     return className;
