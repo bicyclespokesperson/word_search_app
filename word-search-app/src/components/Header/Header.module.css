@@ -7,6 +7,30 @@
   margin: 0 auto;
 }
 
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.newGameButton {
+  background-color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  color: var(--color-background);
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.newGameButton:hover {
+  background-color: transparent;
+  color: var(--color-accent);
+  transform: scale(1.05);
+}
+
 .title {
   font-size: 2.5rem;
   font-weight: 700;
