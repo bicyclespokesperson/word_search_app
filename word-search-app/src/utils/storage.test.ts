@@ -10,7 +10,7 @@ const localStorageMock = {
   clear: vi.fn(),
 };
 
-globalThis.localStorage = localStorageMock as unknown as Storage;
+globalThis.localStorage = localStorageMock as any;
 
 describe('Storage', () => {
   beforeEach(() => {

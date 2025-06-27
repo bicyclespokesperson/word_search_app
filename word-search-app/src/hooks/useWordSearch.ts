@@ -44,7 +44,7 @@ export const useWordSearch = (targetWords: string[] | null) => {
     }));
 
     updateCellHighlights();
-  }, [touchState, updateCellHighlights]);
+  }, [touchState]);
 
   const initializeGame = useCallback((forcedSeed?: string) => {
     // Determine the words to use
@@ -331,7 +331,7 @@ export const useWordSearch = (targetWords: string[] | null) => {
         return { ...prev, grid: newGrid, showingAnswers };
       }
     });
-  }, [findWordInGrid]);
+  }, []);
 
   const findWordInGrid = useCallback((grid: Cell[][], word: string): Position[] => {
     const directions = [
@@ -352,7 +352,7 @@ export const useWordSearch = (targetWords: string[] | null) => {
       }
     }
     return [];
-  }, [checkWordAt]);
+  }, []);
 
   const checkWordAt = useCallback((grid: Cell[][], word: string, start: Position, direction: Direction): Position[] => {
     const positions: Position[] = [];
@@ -374,7 +374,7 @@ export const useWordSearch = (targetWords: string[] | null) => {
     }
     
     return positions;
-  }, [getDirectionOffset]);
+  }, []);
 
   const getDirectionOffset = useCallback((direction: Direction): { rowOffset: number; colOffset: number } => {
     switch (direction) {

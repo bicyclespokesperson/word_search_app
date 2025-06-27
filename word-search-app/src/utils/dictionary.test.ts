@@ -14,7 +14,7 @@ describe('Dictionary', () => {
   describe('initializeDictionary', () => {
     it('should load dictionary from JSON when available', async () => {
       const mockWords = ['CAT', 'DOG', 'BIRD'];
-      (fetch as vi.Mock).mockResolvedValueOnce({
+      (fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockWords)
       });
@@ -29,7 +29,7 @@ describe('Dictionary', () => {
     });
 
     it('should use fallback dictionary when fetch fails', async () => {
-      (fetch as vi.Mock).mockRejectedValueOnce(new Error('Network error'));
+      (fetch as any).mockRejectedValueOnce(new Error('Network error'));
 
       await initializeDictionary();
 
@@ -40,7 +40,7 @@ describe('Dictionary', () => {
     });
 
     it('should use fallback dictionary when response is not ok', async () => {
-      (fetch as vi.Mock).mockResolvedValueOnce({
+      (fetch as any).mockResolvedValueOnce({
         ok: false,
         status: 404
       });
@@ -54,7 +54,7 @@ describe('Dictionary', () => {
 
     it('should not reinitialize if already loaded', async () => {
       const mockWords = ['TEST'];
-      (fetch as vi.Mock).mockResolvedValueOnce({
+      (fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockWords)
       });
@@ -70,7 +70,7 @@ describe('Dictionary', () => {
 
   describe('isValidWord', () => {
     beforeEach(async () => {
-      (fetch as vi.Mock).mockRejectedValueOnce(new Error('Use fallback'));
+      (fetch as any).mockRejectedValueOnce(new Error('Use fallback'));
       await initializeDictionary();
     });
 
@@ -104,7 +104,7 @@ describe('Dictionary', () => {
   describe('getDictionarySize', () => {
     it('should return dictionary size when initialized', async () => {
       const mockWords = ['CAT', 'DOG', 'BIRD', 'FISH'];
-      (fetch as vi.Mock).mockResolvedValueOnce({
+      (fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockWords)
       });
@@ -121,7 +121,7 @@ describe('Dictionary', () => {
   describe('case handling', () => {
     beforeEach(async () => {
       const mockWords = ['hello', 'WORLD', 'Test'];
-      (fetch as vi.Mock).mockResolvedValueOnce({
+      (fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockWords)
       });

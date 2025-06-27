@@ -13,7 +13,7 @@ class DictionaryService {
         this.dictionarySet = new Set(words.map(word => word.toUpperCase()));
         return;
       }
-    } catch {
+    } catch (error) {
       console.warn('Could not load processed dictionary, using fallback');
     }
 

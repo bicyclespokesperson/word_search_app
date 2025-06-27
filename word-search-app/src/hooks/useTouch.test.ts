@@ -151,7 +151,7 @@ describe('useTouch', () => {
       result.current.updateSelection(endPos);
     });
 
-    let finalState: ReturnType<typeof result.current.endSelection>;
+    let finalState: any;
     act(() => {
       finalState = result.current.endSelection();
     });
