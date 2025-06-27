@@ -27,8 +27,6 @@ In the project directory, you can run:
 
 -   `npm run dev`: Runs the app in development mode.
 -   `npm run build`: Builds the app for production to the `dist` folder.
--   `npm run lint`: Lints the project files.
--   `npm run preview`: Serves the production build locally for preview.
 -   `npm run test`: Runs the test suite.
 -   `npm run deploy`: Deploys the app to GitHub Pages.
 
