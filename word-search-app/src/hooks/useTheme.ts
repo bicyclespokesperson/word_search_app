@@ -5,7 +5,7 @@ const lightTheme: Theme = {
   name: 'light',
   colors: {
     background: '#ffffff',
-    surface: '#e9ecef',
+    surface: '#ced4da', // Darker grey for better contrast
     text: '#212529',
     primary: '#007bff',
     secondary: '#6c757d',
