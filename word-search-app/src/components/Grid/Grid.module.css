@@ -51,6 +51,32 @@
   background-color: var(--color-bonus-word-highlight);
 }
 
+.cell.bonusFlash {
+  background-color: var(--color-bonus-word-highlight);
+  color: var(--color-background);
+  animation: bonusFlash 1.5s ease-out forwards;
+}
+
+@keyframes bonusFlash {
+  0% {
+    background-color: var(--color-bonus-word-highlight);
+    color: var(--color-background);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    background-color: var(--color-bonus-word-highlight);
+    color: var(--color-background);
+    transform: scale(1.05);
+  }
+  100% {
+    background-color: transparent;
+    color: var(--color-text);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
 @media (max-width: 768px) {
   .grid {
     padding: 12px;

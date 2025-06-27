@@ -32,6 +32,10 @@ export const Cell = ({ cell, onPointerDown, onPointerEnter, onPointerUp }: CellP
       }
     }
     
+    if (cell.isBonusFlashing) {
+      className += ` ${styles.bonusFlash}`;
+    }
+    
     return className;
   };
 

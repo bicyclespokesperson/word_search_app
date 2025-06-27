@@ -9,6 +9,7 @@ export interface Cell {
   isHighlighted: boolean;
   isPartOfFoundWord: boolean;
   foundWordId?: string;
+  isBonusFlashing?: boolean;
 }
 
 export interface FoundWord {

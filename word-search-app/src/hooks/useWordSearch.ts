@@ -146,13 +146,21 @@ export const useWordSearch = (targetWords: string[]) => {
             pos.row === cell.position.row && pos.col === cell.position.col
           );
           
-          // Only highlight target words permanently, not bonus words
-          if (isPartOfWord && isTargetWord) {
-            return {
-              ...cell,
-              isPartOfFoundWord: true,
-              foundWordId: foundWord.id
-            };
+          if (isPartOfWord) {
+            if (isTargetWord) {
+              // Highlight target words permanently
+              return {
+                ...cell,
+                isPartOfFoundWord: true,
+                foundWordId: foundWord.id
+              };
+            } else {
+              // Flash bonus words temporarily
+              return {
+                ...cell,
+                isBonusFlashing: true
+              };
+            }
           }
           
           return cell;
@@ -185,6 +193,21 @@ export const useWordSearch = (targetWords: string[]) => {
       // Clear saved game if completed
       if (isCompleted) {
         setTimeout(() => clearGameState(), 1000);
+      }
+
+      // Clear bonus flash animation after 1.5 seconds
+      if (!isTargetWord) {
+        setTimeout(() => {
+          setGameState(currentState => ({
+            ...currentState,
+            grid: currentState.grid.map(row =>
+              row.map(cell => ({
+                ...cell,
+                isBonusFlashing: false
+              }))
+            )
+          }));
+        }, 1500);
       }
 
       return newState;
