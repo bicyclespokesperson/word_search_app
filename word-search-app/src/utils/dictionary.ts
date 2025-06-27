@@ -7,7 +7,7 @@ class DictionaryService {
 
     try {
       // Try to load the processed dictionary JSON first
-      const response = await fetch('/dictionary.json');
+      const response = await fetch(`${import.meta.env.BASE_URL}dictionary.json`);
       if (response.ok) {
         const words: string[] = await response.json();
         this.dictionarySet = new Set(words.map(word => word.toUpperCase()));
