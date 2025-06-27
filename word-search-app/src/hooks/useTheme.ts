@@ -33,11 +33,23 @@ const darkTheme: Theme = {
 
 export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
+    // Check for saved preference first, fallback to system preference
+    const savedTheme = localStorage.getItem('word-search-theme');
+    if (savedTheme === 'light') return lightTheme;
+    if (savedTheme === 'dark') return darkTheme;
+    
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDark ? darkTheme : lightTheme;
   });
 
+  const [isManualOverride, setIsManualOverride] = useState(() => {
+    return localStorage.getItem('word-search-theme') !== null;
+  });
+
   useEffect(() => {
+    // Only listen to system changes if user hasn't manually set a preference
+    if (isManualOverride) return;
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
     const handleChange = (e: MediaQueryListEvent) => {
@@ -46,7 +58,7 @@ export const useTheme = () => {
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [isManualOverride]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -56,8 +68,18 @@ export const useTheme = () => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(current => current.name === 'light' ? darkTheme : lightTheme);
+    const newTheme = theme.name === 'light' ? darkTheme : lightTheme;
+    setTheme(newTheme);
+    setIsManualOverride(true);
+    localStorage.setItem('word-search-theme', newTheme.name);
   };
 
-  return { theme, toggleTheme };
+  const resetToSystemTheme = () => {
+    setIsManualOverride(false);
+    localStorage.removeItem('word-search-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(prefersDark ? darkTheme : lightTheme);
+  };
+
+  return { theme, toggleTheme, resetToSystemTheme, isManualOverride };
 };
