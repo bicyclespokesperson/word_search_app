@@ -18,6 +18,10 @@
 .words {
   line-height: 1.6;
   font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-align: center;
 }
 
 .word {
