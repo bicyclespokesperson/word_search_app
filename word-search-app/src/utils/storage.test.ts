@@ -200,7 +200,8 @@ describe('Storage', () => {
         bonusWordsFound: 2,
         isCompleted: false,
         currentSelection: [],
-        isSelecting: false
+        isSelecting: false,
+        showingAnswers: false
       };
 
       // Save the game
