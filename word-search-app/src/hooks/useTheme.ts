@@ -12,7 +12,8 @@ const lightTheme: Theme = {
     accent: '#28a745',
     targetWordHighlight: '#007bff',
     bonusWordHighlight: '#28a745',
-    selectionHighlight: '#ffc107'
+    selectionHighlight: '#ffc107',
+    answerHighlight: '#9b59b6'
   }
 };
 
@@ -27,7 +28,8 @@ const darkTheme: Theme = {
     accent: '#51cf66',
     targetWordHighlight: '#4dabf7',
     bonusWordHighlight: '#51cf66',
-    selectionHighlight: '#ffd43b'
+    selectionHighlight: '#ffd43b',
+    answerHighlight: '#c69ae6'
   }
 };
 

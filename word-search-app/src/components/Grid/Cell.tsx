@@ -36,6 +36,10 @@ export const Cell = ({ cell, onPointerDown, onPointerEnter, onPointerUp }: CellP
       className += ` ${styles.bonusFlash}`;
     }
     
+    if (cell.isAnswerRevealed) {
+      className += ` ${styles.answerRevealed}`;
+    }
+    
     return className;
   };
 

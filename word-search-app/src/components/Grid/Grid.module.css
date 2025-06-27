@@ -57,6 +57,11 @@
   animation: bonusFlash 1.5s ease-out forwards;
 }
 
+.cell.answerRevealed {
+  background-color: var(--color-answer-highlight);
+  color: var(--color-background);
+}
+
 @keyframes bonusFlash {
   0% {
     background-color: var(--color-bonus-word-highlight);

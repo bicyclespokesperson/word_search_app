@@ -1,25 +1,40 @@
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header/Header';
 import { Grid } from './components/Grid/Grid';
 import { Stats } from './components/Stats/Stats';
 import { WordList } from './components/WordList/WordList';
 import { useWordSearch } from './hooks/useWordSearch';
+import { selectRandomWords } from './utils/wordSelector';
 import wordLists from './data/wordLists.json';
 import styles from './App.module.css';
 
 function App() {
+  const [currentWords, setCurrentWords] = useState<string[] | null>(null);
+
   const {
     gameState,
     handlePointerDown,
     handlePointerEnter,
     handlePointerUp,
-    newGame
-  } = useWordSearch(wordLists.programming);
+    newGame,
+    toggleShowAnswers
+  } = useWordSearch(currentWords);
+
+  const handleNewGame = () => {
+    const newWords = selectRandomWords(wordLists.programming, 15);
+    setCurrentWords(newWords);
+    // newGame() will be called automatically by useWordSearch when targetWords change
+  };
 
   const foundTargetWords = gameState.foundWords.filter(fw => fw.isTargetWord).map(fw => fw.word);
 
   return (
     <div className={styles.app}>
-      <Header onNewGame={newGame} />
+      <Header 
+        onNewGame={handleNewGame} 
+        onToggleShowAnswers={toggleShowAnswers}
+        showingAnswers={gameState.showingAnswers}
+      />
       
       <main className={styles.main}>
         <Grid

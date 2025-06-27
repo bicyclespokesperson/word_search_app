@@ -10,6 +10,7 @@ export interface Cell {
   isPartOfFoundWord: boolean;
   foundWordId?: string;
   isBonusFlashing?: boolean;
+  isAnswerRevealed?: boolean;
 }
 
 export interface FoundWord {
@@ -49,6 +50,7 @@ export interface GameState {
   currentSelection: Position[];
   isSelecting: boolean;
   gridSeed?: string;
+  showingAnswers: boolean;
 }
 
 export interface Theme {
@@ -63,6 +65,7 @@ export interface Theme {
     targetWordHighlight: string;
     bonusWordHighlight: string;
     selectionHighlight: string;
+    answerHighlight: string;
   };
 }
 

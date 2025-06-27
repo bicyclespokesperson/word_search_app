@@ -1,19 +1,30 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { GameState, Position, FoundWord } from '../types';
+import { Direction } from '../types';
 import { placeWordsInGrid } from '../utils/gridGenerator';
 import { useTouch } from './useTouch';
 import { initializeDictionary, isValidWord } from '../utils/dictionary';
 import { saveGameState, loadGameState, clearGameState } from '../utils/storage';
+import { selectRandomWords } from '../utils/wordSelector';
+import wordLists from '../data/wordLists.json';
 
-export const useWordSearch = (targetWords: string[]) => {
+const arraysEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) return false;
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((val, index) => val === sortedB[index]);
+};
+
+export const useWordSearch = (targetWords: string[] | null) => {
   const [gameState, setGameState] = useState<GameState>({
     grid: [],
-    targetWords,
+    targetWords: targetWords || [],
     foundWords: [],
     bonusWordsFound: 0,
     isCompleted: false,
     currentSelection: [],
-    isSelecting: false
+    isSelecting: false,
+    showingAnswers: false
   });
 
   const {
@@ -31,7 +42,7 @@ export const useWordSearch = (targetWords: string[]) => {
       initializeGame();
     };
     initApp();
-  }, [targetWords]);
+  }, [targetWords, initializeGame]);
 
   useEffect(() => {
     setGameState(prev => ({
@@ -44,25 +55,39 @@ export const useWordSearch = (targetWords: string[]) => {
   }, [touchState]);
 
   const initializeGame = useCallback((forcedSeed?: string) => {
+    // Determine the words to use
+    let wordsToUse = targetWords;
+    
     // Try to load saved game first
     if (!forcedSeed) {
       const savedGame = loadGameState();
       if (savedGame) {
+        // If we don't have target words yet, use the saved game's words
+        if (!targetWords) {
+          wordsToUse = savedGame.targetWords;
+        }
+        // Only restore if words match
+        if (wordsToUse && arraysEqual(savedGame.targetWords, wordsToUse)) {
         // Restore saved game
         const { grid } = placeWordsInGrid(savedGame.targetWords, 15, 1000, savedGame.gridSeed);
         
         // Restore found word highlights
         const restoredGrid = grid.map(row =>
           row.map(cell => {
-            const foundWord = savedGame.foundWords.find(fw => 
+            // Find all words that include this cell position
+            const wordsAtPosition = savedGame.foundWords.filter(fw => 
               fw.positions.some(pos => pos.row === cell.position.row && pos.col === cell.position.col)
             );
             
-            if (foundWord && foundWord.isTargetWord) {
+            // Prioritize target words over bonus words for highlighting
+            const targetWord = wordsAtPosition.find(fw => fw.isTargetWord);
+            const wordToHighlight = targetWord || wordsAtPosition[0];
+            
+            if (wordToHighlight && wordToHighlight.isTargetWord) {
               return {
                 ...cell,
                 isPartOfFoundWord: true,
-                foundWordId: foundWord.id
+                foundWordId: wordToHighlight.id
               };
             }
             
@@ -78,24 +103,31 @@ export const useWordSearch = (targetWords: string[]) => {
           isCompleted: savedGame.isCompleted,
           currentSelection: [],
           isSelecting: false,
-          gridSeed: savedGame.gridSeed
+          gridSeed: savedGame.gridSeed,
+          showingAnswers: false
         });
         return;
       }
     }
 
+    // If we still don't have words, generate them
+    if (!wordsToUse) {
+      wordsToUse = selectRandomWords(wordLists.programming, 15);
+    }
+
     // Create new game
-    const { grid, seed } = placeWordsInGrid(targetWords, 15, 1000, forcedSeed);
+    const { grid, seed } = placeWordsInGrid(wordsToUse, 15, 1000, forcedSeed);
     
     setGameState({
       grid,
-      targetWords,
+      targetWords: wordsToUse,
       foundWords: [],
       bonusWordsFound: 0,
       isCompleted: false,
       currentSelection: [],
       isSelecting: false,
-      gridSeed: seed
+      gridSeed: seed,
+      showingAnswers: false
     });
   }, [targetWords]);
 
@@ -148,18 +180,21 @@ export const useWordSearch = (targetWords: string[]) => {
           
           if (isPartOfWord) {
             if (isTargetWord) {
-              // Highlight target words permanently
+              // Target words always override any existing highlighting
               return {
                 ...cell,
                 isPartOfFoundWord: true,
-                foundWordId: foundWord.id
+                foundWordId: foundWord.id,
+                isBonusFlashing: false // Clear any bonus flashing
               };
             } else {
-              // Flash bonus words temporarily
-              return {
-                ...cell,
-                isBonusFlashing: true
-              };
+              // Only flash bonus words if the cell isn't already part of a target word
+              if (!cell.isPartOfFoundWord) {
+                return {
+                  ...cell,
+                  isBonusFlashing: true
+                };
+              }
             }
           }
           
@@ -265,12 +300,109 @@ export const useWordSearch = (targetWords: string[]) => {
     clearSelection();
   }, [initializeGame, clearSelection]);
 
+  const toggleShowAnswers = useCallback(() => {
+    setGameState(prev => {
+      const showingAnswers = !prev.showingAnswers;
+      
+      // If showing answers, mark unfound target words
+      if (showingAnswers) {
+        const foundTargetWords = prev.foundWords.filter(fw => fw.isTargetWord).map(fw => fw.word);
+        const unfoundTargetWords = prev.targetWords.filter(word => !foundTargetWords.includes(word));
+        
+        // Find positions of unfound words in the grid
+        const newGrid = prev.grid.map(row => row.map(cell => ({ ...cell })));
+        
+        unfoundTargetWords.forEach(word => {
+          const wordPositions = findWordInGrid(newGrid, word);
+          if (wordPositions.length > 0) {
+            wordPositions.forEach(pos => {
+              newGrid[pos.row][pos.col].isAnswerRevealed = true;
+            });
+          }
+        });
+        
+        return { ...prev, grid: newGrid, showingAnswers };
+      } else {
+        // Hide answers
+        const newGrid = prev.grid.map(row => 
+          row.map(cell => ({ ...cell, isAnswerRevealed: false }))
+        );
+        return { ...prev, grid: newGrid, showingAnswers };
+      }
+    });
+  }, []);
+
+  const findWordInGrid = useCallback((grid: Cell[][], word: string): Position[] => {
+    const directions = [
+      Direction.HORIZONTAL, Direction.HORIZONTAL_REVERSE,
+      Direction.VERTICAL, Direction.VERTICAL_REVERSE,
+      Direction.DIAGONAL_DOWN_RIGHT, Direction.DIAGONAL_DOWN_LEFT,
+      Direction.DIAGONAL_UP_RIGHT, Direction.DIAGONAL_UP_LEFT
+    ];
+
+    for (let row = 0; row < grid.length; row++) {
+      for (let col = 0; col < grid[0].length; col++) {
+        for (const direction of directions) {
+          const positions = checkWordAt(grid, word, { row, col }, direction);
+          if (positions.length > 0) {
+            return positions;
+          }
+        }
+      }
+    }
+    return [];
+  }, []);
+
+  const checkWordAt = useCallback((grid: Cell[][], word: string, start: Position, direction: Direction): Position[] => {
+    const positions: Position[] = [];
+    const { rowOffset, colOffset } = getDirectionOffset(direction);
+    
+    for (let i = 0; i < word.length; i++) {
+      const row = start.row + (rowOffset * i);
+      const col = start.col + (colOffset * i);
+      
+      if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
+        return [];
+      }
+      
+      if (grid[row][col].letter !== word[i]) {
+        return [];
+      }
+      
+      positions.push({ row, col });
+    }
+    
+    return positions;
+  }, []);
+
+  const getDirectionOffset = useCallback((direction: Direction): { rowOffset: number; colOffset: number } => {
+    switch (direction) {
+      case Direction.HORIZONTAL:
+        return { rowOffset: 0, colOffset: 1 };
+      case Direction.HORIZONTAL_REVERSE:
+        return { rowOffset: 0, colOffset: -1 };
+      case Direction.VERTICAL:
+        return { rowOffset: 1, colOffset: 0 };
+      case Direction.VERTICAL_REVERSE:
+        return { rowOffset: -1, colOffset: 0 };
+      case Direction.DIAGONAL_DOWN_RIGHT:
+        return { rowOffset: 1, colOffset: 1 };
+      case Direction.DIAGONAL_DOWN_LEFT:
+        return { rowOffset: 1, colOffset: -1 };
+      case Direction.DIAGONAL_UP_RIGHT:
+        return { rowOffset: -1, colOffset: 1 };
+      case Direction.DIAGONAL_UP_LEFT:
+        return { rowOffset: -1, colOffset: -1 };
+    }
+  }, []);
+
   return {
     gameState,
     handlePointerDown,
     handlePointerEnter,
     handlePointerUp,
     newGame,
+    toggleShowAnswers,
     touchState
   };
 };

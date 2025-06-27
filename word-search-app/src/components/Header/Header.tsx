@@ -3,9 +3,11 @@ import styles from './Header.module.css';
 
 interface HeaderProps {
   onNewGame?: () => void;
+  onToggleShowAnswers?: () => void;
+  showingAnswers?: boolean;
 }
 
-export const Header = ({ onNewGame }: HeaderProps) => {
+export const Header = ({ onNewGame, onToggleShowAnswers, showingAnswers = false }: HeaderProps) => {
   const { theme, toggleTheme } = useTheme();
   
   return (
@@ -19,6 +21,15 @@ export const Header = ({ onNewGame }: HeaderProps) => {
             aria-label="Start new game"
           >
             New Game
+          </button>
+        )}
+        {onToggleShowAnswers && (
+          <button 
+            className={styles.showAnswersButton}
+            onClick={onToggleShowAnswers}
+            aria-label={showingAnswers ? "Hide answers" : "Show answers"}
+          >
+            {showingAnswers ? 'Hide Answers' : 'Show Answers'}
           </button>
         )}
         <button 
