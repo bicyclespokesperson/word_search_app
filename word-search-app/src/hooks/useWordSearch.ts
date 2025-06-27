@@ -142,16 +142,18 @@ export const useWordSearch = (targetWords: string[]) => {
 
     const finalState = endSelection();
     const selectedWord = getSelectedWord(finalState.selectedPositions);
+    const reversedWord = selectedWord.split('').reverse().join('');
     
     if (selectedWord.length < 2) {
       return;
     }
 
-    const isTargetWord = gameState.targetWords.includes(selectedWord);
-    const isAlreadyFound = gameState.foundWords.some(fw => fw.word === selectedWord);
+    const isTargetWord = gameState.targetWords.includes(selectedWord) || gameState.targetWords.includes(reversedWord);
+    const wordToMark = gameState.targetWords.includes(selectedWord) ? selectedWord : reversedWord;
+    const isAlreadyFound = gameState.foundWords.some(fw => fw.word === wordToMark);
 
     if (isTargetWord && !isAlreadyFound) {
-      markWordAsFound(selectedWord, finalState.selectedPositions, true);
+      markWordAsFound(wordToMark, finalState.selectedPositions, true);
     }
     
   }, [touchState, endSelection, getSelectedWord, gameState.targetWords, gameState.foundWords, markWordAsFound, clearSelection]);

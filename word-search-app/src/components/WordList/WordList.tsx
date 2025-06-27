@@ -10,13 +10,15 @@ export const WordList = ({ words, foundWords }: WordListProps) => {
     <div className={styles.wordList}>
       <h2 className={styles.title}>Find These Words</h2>
       <div className={styles.words}>
-        {words.map((word) => (
-          <div
-            key={word}
-            className={`${styles.word} ${foundWords.includes(word) ? styles.found : ''}`}
-          >
-            {word}
-          </div>
+        {words.map((word, index) => (
+          <span key={word}>
+            <span
+              className={`${styles.word} ${foundWords.includes(word) ? styles.found : ''}`}
+            >
+              {word}
+            </span>
+            {index < words.length - 1 && <span className={styles.separator}>,</span>}
+          </span>
         ))}
       </div>
     </div>

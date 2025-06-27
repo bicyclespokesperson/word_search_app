@@ -16,20 +16,12 @@
 }
 
 .words {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
 .word {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-secondary);
-  border-radius: 8px;
-  font-size: 0.9rem;
+  display: inline;
   font-weight: 500;
   color: var(--color-text);
   text-transform: uppercase;
@@ -38,11 +30,14 @@
 }
 
 .word.found {
-  background-color: var(--color-target-word-highlight);
-  color: var(--color-background);
+  color: var(--color-target-word-highlight);
   text-decoration: line-through;
-  border-color: var(--color-primary);
-  opacity: 0.8;
+  font-weight: 600;
+}
+
+.separator {
+  color: var(--color-secondary);
+  margin: 0 8px;
 }
 
 @media (max-width: 768px) {
@@ -51,13 +46,11 @@
   }
   
   .words {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 8px;
+    font-size: 0.9rem;
   }
   
-  .word {
-    padding: 6px 10px;
-    font-size: 0.8rem;
+  .separator {
+    margin: 0 6px;
   }
 }
 
@@ -67,12 +60,10 @@
   }
   
   .words {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
+    font-size: 0.8rem;
   }
   
-  .word {
-    padding: 5px 8px;
-    font-size: 0.75rem;
+  .separator {
+    margin: 0 4px;
   }
 }

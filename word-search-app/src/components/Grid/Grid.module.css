@@ -17,8 +17,8 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-secondary);
+  background-color: transparent;
+  border: none;
   border-radius: 4px;
   font-size: clamp(0.8rem, 2vw, 1.2rem);
   font-weight: 600;
@@ -45,12 +45,10 @@
 .cell.foundWord {
   background-color: var(--color-target-word-highlight);
   color: var(--color-background);
-  border-color: var(--color-primary);
 }
 
 .cell.foundWord.bonusWord {
   background-color: var(--color-bonus-word-highlight);
-  border-color: var(--color-accent);
 }
 
 @media (max-width: 768px) {
