@@ -183,9 +183,38 @@ export const placeWordsInGrid = (
     col: Math.floor(rng.next() * size)
   });
 
-  const getSeededRandomDirection = (): Direction => {
-    const directions = Object.values(Direction);
-    return directions[Math.floor(rng.next() * directions.length)];
+  const getSeededRandomDirection = (wordsPlaced: number, totalWords: number): Direction => {
+    const backwardDirections = [
+      Direction.HORIZONTAL_REVERSE,
+      Direction.VERTICAL_REVERSE
+    ];
+    
+    const forwardDirections = [
+      Direction.HORIZONTAL,
+      Direction.VERTICAL,
+      Direction.DIAGONAL_DOWN_RIGHT,
+      Direction.DIAGONAL_DOWN_LEFT,
+      Direction.DIAGONAL_UP_RIGHT,
+      Direction.DIAGONAL_UP_LEFT
+    ];
+    
+    // Calculate how many backwards words we want (target ~2 per grid)
+    const targetBackwardsCount = Math.min(2, Math.floor(totalWords * 0.15)); // 15% max, but cap at 2
+    const backwardsPlaced = placements.filter(p => 
+      backwardDirections.includes(p.direction)
+    ).length;
+    
+    // If we haven't placed enough backwards words and we're in the first 80% of placement
+    const shouldConsiderBackwards = backwardsPlaced < targetBackwardsCount && 
+                                   wordsPlaced < totalWords * 0.8;
+    
+    if (shouldConsiderBackwards && rng.next() < 0.3) { // 30% chance for backwards when eligible
+      const allDirections = [...forwardDirections, ...backwardDirections];
+      return allDirections[Math.floor(rng.next() * allDirections.length)];
+    } else {
+      // Favor forward directions
+      return forwardDirections[Math.floor(rng.next() * forwardDirections.length)];
+    }
   };
 
   const getSeededRandomLetter = (): string => {
@@ -201,13 +230,14 @@ export const placeWordsInGrid = (
     return 'E';
   };
 
-  for (const word of sortedWords) {
+  for (let wordIndex = 0; wordIndex < sortedWords.length; wordIndex++) {
+    const word = sortedWords[wordIndex];
     let placed = false;
     let attempts = 0;
 
     while (!placed && attempts < maxAttempts) {
       const startPos = getSeededRandomPosition(gridSize);
-      const direction = getSeededRandomDirection();
+      const direction = getSeededRandomDirection(wordIndex, sortedWords.length);
 
       const placement = placeWordInGrid(grid, word, startPos, direction);
       if (placement) {

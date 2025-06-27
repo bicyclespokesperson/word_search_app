@@ -12,7 +12,7 @@ export const Header = ({ onNewGame, onToggleShowAnswers, showingAnswers = false 
   
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>Word Search</h1>
+      <h1 className={styles.title}>Code Quest</h1>
       <div className={styles.controls}>
         {onNewGame && (
           <button 

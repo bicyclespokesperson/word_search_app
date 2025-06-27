@@ -37,14 +37,6 @@ export const useWordSearch = (targetWords: string[] | null) => {
   } = useTouch();
 
   useEffect(() => {
-    const initApp = async () => {
-      await initializeDictionary();
-      initializeGame();
-    };
-    initApp();
-  }, [targetWords, initializeGame]);
-
-  useEffect(() => {
     setGameState(prev => ({
       ...prev,
       currentSelection: touchState.selectedPositions,
@@ -68,45 +60,46 @@ export const useWordSearch = (targetWords: string[] | null) => {
         }
         // Only restore if words match
         if (wordsToUse && arraysEqual(savedGame.targetWords, wordsToUse)) {
-        // Restore saved game
-        const { grid } = placeWordsInGrid(savedGame.targetWords, 15, 1000, savedGame.gridSeed);
-        
-        // Restore found word highlights
-        const restoredGrid = grid.map(row =>
-          row.map(cell => {
-            // Find all words that include this cell position
-            const wordsAtPosition = savedGame.foundWords.filter(fw => 
-              fw.positions.some(pos => pos.row === cell.position.row && pos.col === cell.position.col)
-            );
-            
-            // Prioritize target words over bonus words for highlighting
-            const targetWord = wordsAtPosition.find(fw => fw.isTargetWord);
-            const wordToHighlight = targetWord || wordsAtPosition[0];
-            
-            if (wordToHighlight && wordToHighlight.isTargetWord) {
-              return {
-                ...cell,
-                isPartOfFoundWord: true,
-                foundWordId: wordToHighlight.id
-              };
-            }
-            
-            return cell;
-          })
-        );
-        
-        setGameState({
-          grid: restoredGrid,
-          targetWords: savedGame.targetWords,
-          foundWords: savedGame.foundWords,
-          bonusWordsFound: savedGame.bonusWordsFound,
-          isCompleted: savedGame.isCompleted,
-          currentSelection: [],
-          isSelecting: false,
-          gridSeed: savedGame.gridSeed,
-          showingAnswers: false
-        });
-        return;
+          // Restore saved game
+          const { grid } = placeWordsInGrid(savedGame.targetWords, 15, 1000, savedGame.gridSeed);
+          
+          // Restore found word highlights
+          const restoredGrid = grid.map(row =>
+            row.map(cell => {
+              // Find all words that include this cell position
+              const wordsAtPosition = savedGame.foundWords.filter(fw => 
+                fw.positions.some(pos => pos.row === cell.position.row && pos.col === cell.position.col)
+              );
+              
+              // Prioritize target words over bonus words for highlighting
+              const targetWord = wordsAtPosition.find(fw => fw.isTargetWord);
+              const wordToHighlight = targetWord || wordsAtPosition[0];
+              
+              if (wordToHighlight && wordToHighlight.isTargetWord) {
+                return {
+                  ...cell,
+                  isPartOfFoundWord: true,
+                  foundWordId: wordToHighlight.id
+                };
+              }
+              
+              return cell;
+            })
+          );
+          
+          setGameState({
+            grid: restoredGrid,
+            targetWords: savedGame.targetWords,
+            foundWords: savedGame.foundWords,
+            bonusWordsFound: savedGame.bonusWordsFound,
+            isCompleted: savedGame.isCompleted,
+            currentSelection: [],
+            isSelecting: false,
+            gridSeed: savedGame.gridSeed,
+            showingAnswers: false
+          });
+          return;
+        }
       }
     }
 
@@ -130,6 +123,14 @@ export const useWordSearch = (targetWords: string[] | null) => {
       showingAnswers: false
     });
   }, [targetWords]);
+
+  useEffect(() => {
+    const initApp = async () => {
+      await initializeDictionary();
+      initializeGame();
+    };
+    initApp();
+  }, [targetWords, initializeGame]);
 
   const updateCellHighlights = useCallback(() => {
     setGameState(prev => ({
