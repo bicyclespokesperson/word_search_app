@@ -17,7 +17,7 @@ export const WordList = ({ words, foundWords }: WordListProps) => {
             >
               {word}
             </span>
-            {index < words.length - 1 && <span className={styles.separator}>,</span>}
+{index < words.length - 1 && <span className={styles.separator}>, </span>}
           </span>
         ))}
       </div>

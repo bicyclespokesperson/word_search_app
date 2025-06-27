@@ -18,8 +18,8 @@
 .words {
   line-height: 1.6;
   font-size: 1rem;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
   white-space: normal;
   text-align: center;
 }
@@ -41,7 +41,7 @@
 
 .separator {
   color: var(--color-secondary);
-  margin: 0 8px;
+  margin-right: 12px;
 }
 
 @media (max-width: 768px) {

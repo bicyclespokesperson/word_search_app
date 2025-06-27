@@ -77,15 +77,21 @@ export const useWordSearch = (targetWords: string[]) => {
   }, [gameState.grid]);
 
   const markWordAsFound = useCallback((word: string, positions: Position[], isTargetWord: boolean) => {
-    const foundWord: FoundWord = {
-      id: `${word}-${Date.now()}`,
-      word,
-      positions,
-      isTargetWord,
-      isBonus: !isTargetWord
-    };
-
     setGameState(prev => {
+      // Double-check that the word isn't already found to prevent duplicates
+      const isAlreadyFound = prev.foundWords.some(fw => fw.word === word);
+      if (isAlreadyFound) {
+        return prev;
+      }
+
+      const foundWord: FoundWord = {
+        id: `${word}-${Date.now()}-${Math.random()}`,
+        word,
+        positions,
+        isTargetWord,
+        isBonus: !isTargetWord
+      };
+
       const newGrid = prev.grid.map(row =>
         row.map(cell => {
           const isPartOfWord = positions.some(pos => 
@@ -111,6 +117,8 @@ export const useWordSearch = (targetWords: string[]) => {
 
       const targetWordsFound = newFoundWords.filter(fw => fw.isTargetWord);
       const isCompleted = targetWordsFound.length === prev.targetWords.length;
+
+      console.log(`Found word: ${word}, Total target words found: ${targetWordsFound.length}`);
 
       return {
         ...prev,
