@@ -6,9 +6,10 @@ interface VictoryProps {
   targetWordsFound: number;
   bonusWordsFound: number;
   onNewGame: () => void;
+  onDismiss: () => void;
 }
 
-export const Victory = ({ isVisible, targetWordsFound, bonusWordsFound, onNewGame }: VictoryProps) => {
+export const Victory = ({ isVisible, targetWordsFound, bonusWordsFound, onNewGame, onDismiss }: VictoryProps) => {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
@@ -34,12 +35,20 @@ export const Victory = ({ isVisible, targetWordsFound, bonusWordsFound, onNewGam
             Plus <strong>{bonusWordsFound}</strong> bonus words!
           </p>
         )}
-        <button 
-          className={styles.newGameButton}
-          onClick={onNewGame}
-        >
-          New Game
-        </button>
+        <div className={styles.buttons}>
+          <button 
+            className={styles.dismissButton}
+            onClick={onDismiss}
+          >
+            Keep Searching
+          </button>
+          <button 
+            className={styles.newGameButton}
+            onClick={onNewGame}
+          >
+            New Game
+          </button>
+        </div>
       </div>
     </div>
   );

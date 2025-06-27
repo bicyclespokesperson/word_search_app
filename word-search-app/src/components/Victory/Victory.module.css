@@ -59,6 +59,31 @@
   font-weight: 600;
 }
 
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dismissButton {
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dismissButton:hover {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  transform: scale(1.05);
+}
+
 .newGameButton {
   background-color: var(--color-accent);
   border: 2px solid var(--color-accent);
@@ -113,5 +138,17 @@
   
   .message {
     font-size: 1.1rem;
+  }
+  
+  .buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .dismissButton,
+  .newGameButton {
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 1rem;
   }
 }

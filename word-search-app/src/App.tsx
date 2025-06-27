@@ -11,6 +11,7 @@ import styles from './App.module.css';
 
 function App() {
   const [currentWords, setCurrentWords] = useState<string[] | null>(null);
+  const [victoryDismissed, setVictoryDismissed] = useState(false);
 
   const {
     gameState,
@@ -23,7 +24,12 @@ function App() {
   const handleNewGame = () => {
     const newWords = selectRandomWords(wordLists.programming, 15);
     setCurrentWords(newWords);
+    setVictoryDismissed(false); // Reset victory modal for new game
     // newGame() will be called automatically by useWordSearch when targetWords change
+  };
+
+  const handleVictoryDismiss = () => {
+    setVictoryDismissed(true);
   };
 
   const foundTargetWords = gameState.foundWords.filter(fw => fw.isTargetWord).map(fw => fw.word);
@@ -57,10 +63,11 @@ function App() {
       </main>
       
       <Victory
-        isVisible={gameState.isCompleted}
+        isVisible={gameState.isCompleted && !victoryDismissed}
         targetWordsFound={foundTargetWords.length}
         bonusWordsFound={gameState.bonusWordsFound}
         onNewGame={handleNewGame}
+        onDismiss={handleVictoryDismiss}
       />
     </div>
   );
