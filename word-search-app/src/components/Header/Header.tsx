@@ -9,13 +9,13 @@ interface HeaderProps {
 
 export const Header = ({ onNewGame, onToggleShowAnswers, showingAnswers = false }: HeaderProps) => {
   const { theme, toggleTheme } = useTheme();
-  
+
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>Code Quest</h1>
+      <h1 className={styles.title}>Izzy's Word Search</h1>
       <div className={styles.controls}>
         {onNewGame && (
-          <button 
+          <button
             className={styles.newGameButton}
             onClick={onNewGame}
             aria-label="Start new game"
@@ -24,7 +24,7 @@ export const Header = ({ onNewGame, onToggleShowAnswers, showingAnswers = false 
           </button>
         )}
         {onToggleShowAnswers && (
-          <button 
+          <button
             className={styles.showAnswersButton}
             onClick={onToggleShowAnswers}
             aria-label={showingAnswers ? "Hide answers" : "Show answers"}
@@ -32,7 +32,7 @@ export const Header = ({ onNewGame, onToggleShowAnswers, showingAnswers = false 
             {showingAnswers ? 'Hide Answers' : 'Show Answers'}
           </button>
         )}
-        <button 
+        <button
           className={styles.themeToggle}
           onClick={toggleTheme}
           aria-label={`Switch to ${theme.name === 'light' ? 'dark' : 'light'} mode`}
