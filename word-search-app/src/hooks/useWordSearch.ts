@@ -5,8 +5,7 @@ import { placeWordsInGrid } from '../utils/gridGenerator';
 import { useTouch } from './useTouch';
 import { initializeDictionary, isValidWord } from '../utils/dictionary';
 import { saveGameState, loadGameState, clearGameState } from '../utils/storage';
-import { selectRandomWords } from '../utils/wordSelector';
-import wordLists from '../data/wordLists.json';
+import { selectRandomWords, getRandomCategory } from '../utils/wordSelector';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;
@@ -106,7 +105,8 @@ export const useWordSearch = (targetWords: string[] | null) => {
 
     // If we still don't have words, generate them
     if (!wordsToUse) {
-      wordsToUse = selectRandomWords(wordLists.programming, 15);
+      const randomCategory = getRandomCategory();
+      wordsToUse = selectRandomWords(randomCategory.words, 15);
     }
 
     // Create new game

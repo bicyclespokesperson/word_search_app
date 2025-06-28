@@ -5,8 +5,7 @@ import { Stats } from './components/Stats/Stats';
 import { WordList } from './components/WordList/WordList';
 import { Victory } from './components/Victory/Victory';
 import { useWordSearch } from './hooks/useWordSearch';
-import { selectRandomWords } from './utils/wordSelector';
-import wordLists from './data/wordLists.json';
+import { selectRandomWords, getRandomCategory } from './utils/wordSelector';
 import styles from './App.module.css';
 
 function App() {
@@ -22,10 +21,10 @@ function App() {
   } = useWordSearch(currentWords);
 
   const handleNewGame = () => {
-    const newWords = selectRandomWords(wordLists.programming, 15);
+    const randomCategory = getRandomCategory();
+    const newWords = selectRandomWords(randomCategory.words, 15);
     setCurrentWords(newWords);
-    setVictoryDismissed(false); // Reset victory modal for new game
-    // newGame() will be called automatically by useWordSearch when targetWords change
+    setVictoryDismissed(false);
   };
 
   const handleVictoryDismiss = () => {
