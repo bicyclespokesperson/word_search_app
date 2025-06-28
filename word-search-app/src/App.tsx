@@ -10,6 +10,7 @@ import styles from './App.module.css';
 
 function App() {
   const [currentWords, setCurrentWords] = useState<string[] | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<string>('');
   const [victoryDismissed, setVictoryDismissed] = useState(false);
 
   const {
@@ -24,6 +25,7 @@ function App() {
     const randomCategory = getRandomCategory();
     const newWords = selectRandomWords(randomCategory.words, 15);
     setCurrentWords(newWords);
+    setCurrentCategory(randomCategory.name);
     setVictoryDismissed(false);
   };
 
@@ -65,6 +67,7 @@ function App() {
         isVisible={gameState.isCompleted && !victoryDismissed}
         targetWordsFound={foundTargetWords.length}
         bonusWordsFound={gameState.bonusWordsFound}
+        category={currentCategory}
         onNewGame={handleNewGame}
         onDismiss={handleVictoryDismiss}
       />
