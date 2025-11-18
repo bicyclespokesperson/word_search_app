@@ -1,6 +1,6 @@
 # Word Search Game
 
-A simple, modern word search puzzle game that runs in the browser.
+A simple, modern word search puzzle game that runs in the browser. Try it at https://bicyclespokesperson.github.io/word_search_app/
 
 ## Project Overview
 
